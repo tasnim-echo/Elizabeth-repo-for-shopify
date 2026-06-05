@@ -93,12 +93,35 @@
         {% endpaginate %}
       </div>
     {% else %}
-      <p>No comments yet. Be the first to comment!</p>
+      <div class="max-w-4xl mx-auto ">
+        <p>No comments yet. Be the first to comment!</p>
+      </div>
     {% endif %}
   </div>
 
   <div id="comment-form" class="mb-16">
     {% form 'new-comment' article %}
+      {% if form.errors %}
+        <div class="max-w-4xl mx-auto mb-4">
+          <div class="flex items-center gap-2 mb-2">
+            {% render 'icon-error' %}
+            <p class="text-red-700 font-semibold mb-2">Please fix the following errors:</p>
+          </div>
+          <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {% for error in form.errors %}
+              <li>{{ form.errors.messages[error] }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      {% elsif form.posted_successfully? %}
+        <div class="max-w-4xl mx-auto mb-4">
+          <div class="flex items-center gap-2 mb-2">
+            {% render 'icon-success' %}
+            <p class="text-green-700 font-semibold mb-2">Your comment has been submitted successfully!</p>
+          </div>
+      {% endif %}
+
       <div class="flex-1 items-center px-4 max-w-4xl mx-auto">
         <div class="md:flex mb-3 gap-3">
           <div class="md:w-1/2 ">
