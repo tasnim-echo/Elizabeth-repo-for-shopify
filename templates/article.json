@@ -2,7 +2,31 @@
   "name": "Template Article",
   "sections": {
     "template": {
-      "type": "template-article"
+      "type": "template-article",
+      "blocks": {
+        "title": {
+          "type": "article_title"
+        },
+        "auuthor": {
+          "type": "article_author"
+        },
+        "published_data": {
+          "type": "article_date"
+        },
+        "thumbnail": {
+          "type": "featured_image"
+        },
+        "content": {
+          "type": "article_content"
+        }
+      },
+      "block_order": [
+        "title",
+        "auuthor",
+        "published_data",
+        "thumbnail",
+        "content"
+      ]
     }
   },
   "order": ["template"]

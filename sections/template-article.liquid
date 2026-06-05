@@ -1,2 +1,193 @@
-<h1>{{ article.title }}</h1>
-<small>{{ article.author }}</small>
+<article class="max-w-4xl flex flex-col justify-center items-center mx-auto px-4 py-12">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when 'article_title' %}
+        <div class="text-center mb-2">
+          <a class="" href="{{ blog.url }}">{{ blog.title }}</a>
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2 leading-tight">
+            {{ article.title }}
+          </h1>
+        </div>
+
+      {% when 'article_author' %}
+        {% if section.settings.enable_author %}
+          <div class="mb-2">
+            <span class="text-gray-600 text-sm"> By {{ article.author }} </span>
+          </div>
+        {% endif %}
+
+      {% when 'article_date' %}
+        {% if section.settings.enable_date %}
+          <div class="mb-8">
+            <time
+              class="text-sm text-gray-500"
+              datetime="{{ article.published_at | date: '%Y-%m-%d' }}"
+            >
+              {{ article.published_at | date: format: 'abbreviated_date' }}
+            </time>
+          </div>
+        {% endif %}
+
+      {% when 'featured_image' %}
+        <div class="mb-2 overflow-hidden rounded-lg shadow-sm w-full h-[350px]">
+          {% if article.image != blank %}
+            <img
+              class="w-full h-full object-cover"
+              src="{{ article.image | img_url: 'large' }}"
+              alt="{{ article.title }}"
+            >
+          {% else %}
+            {% assign placeholder_img = 'lifestyle-1' %}
+            {{ placeholder_img | placeholder_svg_tag: 'w-full h-80 object-cover' }}
+          {% endif %}
+        </div>
+
+      {% when 'article_content' %}
+        <div class="flex items-center ">
+          <div>
+            {{ article.content }}
+          </div>
+        </div>
+    {% endcase %}
+  {% endfor %}
+</article>
+
+{% if blog.comments_enabled? %}
+  <div class="my-8" id="comments">
+    {% if article.comments_count > 0 %}
+      <div class="max-w-4xl mx-auto ">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">See what people are saying</h2>
+
+        {% paginate article.comments by 5 %}
+          <div class="space-y-5">
+            {% for comment in article.comments %}
+              <div class="flex gap-3">
+                <!-- Avatar -->
+                <div class="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
+                  {{ comment.author | slice: 0 | upcase }}
+                </div>
+
+                <!-- Comment box -->
+                <div class="flex-1">
+                  <div class="bg-gray-100 rounded-2xl px-4 py-2">
+                    <p class="text-sm font-semibold text-gray-900">
+                      {{ comment.author }}
+                    </p>
+
+                    <p class="text-sm text-gray-800 leading-snug">
+                      {{ comment.content }}
+                    </p>
+                  </div>
+
+                  <p class="text-xs text-gray-500 mt-1 ml-2">
+                    {{ comment.created_at | date: format: 'abbreviated_date' }}
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% if paginate.pages > 1 %}
+              {{ paginate | default_pagination }}
+            {% endif %}
+          </div>
+        {% endpaginate %}
+      </div>
+    {% else %}
+      <p>No comments yet. Be the first to comment!</p>
+    {% endif %}
+  </div>
+
+  <div id="comment-form" class="mb-16">
+    {% form 'new-comment' article %}
+      <div class="flex-1 items-center px-4 max-w-4xl mx-auto">
+        <div class="md:flex mb-3 gap-3">
+          <div class="md:w-1/2 ">
+            <input
+              class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 md:mb-0"
+              type="text"
+              name="comment[author]"
+              placeholder="Your Name"
+              required
+            >
+          </div>
+          <div class="md:w-1/2">
+            <input
+              class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 md:mb-0"
+              type="email"
+              name="comment[email]"
+              placeholder="Your Email"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="md:flex mb-3">
+          <div class="md:w-full ">
+            <textarea
+              class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 md:mb-0"
+              name="comment[body]"
+              placeholder="Your Comment"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div class="md:flex mb-3">
+          <div class="md:w-full ">
+            <input
+              class="bg-blue-400 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 w-full cursor-pointer"
+              type="submit"
+              value="Submit Comment"
+            >
+          </div>
+        </div>
+      </div>
+    {% endform %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Article Template",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_author",
+      "label": "Enable Author Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_date",
+      "label": "Enable Date Display"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article_title",
+      "name": "Article Title",
+      "limit": 1
+    },
+    {
+      "type": "article_author",
+      "name": "Article Author",
+      "limit": 1
+    },
+    {
+      "type": "article_date",
+      "name": "Article Date",
+      "limit": 1
+    },
+
+    {
+      "type": "featured_image",
+      "name": "Thumbnail Image",
+      "limit": 1
+    },
+    {
+      "type": "article_content",
+      "name": "Article Content",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}
