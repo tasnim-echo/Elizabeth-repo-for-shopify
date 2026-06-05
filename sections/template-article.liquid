@@ -104,8 +104,10 @@
       {% if form.errors %}
         <div class="max-w-4xl mx-auto mb-4">
           <div class="flex items-center gap-2 mb-2">
-            {% render 'icon-error' %}
-            <p class="text-red-700 font-semibold mb-2">Please fix the following errors:</p>
+            <div>
+              {% render 'icon-error' %}
+            </div>
+            <p class="text-red-700 font-semibold ">Please fix the following errors:</p>
           </div>
           <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {% for error in form.errors %}
@@ -117,8 +119,10 @@
       {% elsif form.posted_successfully? %}
         <div class="max-w-4xl mx-auto mb-4">
           <div class="flex items-center gap-2 mb-2">
-            {% render 'icon-success' %}
-            <p class="text-green-700 font-semibold mb-2">Your comment has been submitted successfully!</p>
+            <div>
+              {% render 'icon-success' %}
+            </div>
+            <p class="text-green-700 font-semibold ">Your comment has been submitted successfully!</p>
           </div>
       {% endif %}
 
