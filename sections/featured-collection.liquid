@@ -1,0 +1,56 @@
+<div class="py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-12">
+      {{ section.settings.title }}
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {% if section.settings.collection != blank %}
+        {% for product in section.settings.collection.products limit: section.settings.products_per_page %}
+          {% render 'product-card', product: product %}
+        {% else %}
+          {% for i in (1..section.settings.products_per_page) %}
+            {% render 'product-card-placeholder' %}
+          {% endfor %}
+        {% endfor %}
+
+      {% else %}
+        {% for i in (1..section.settings.products_per_page) %}
+          {% render 'product-card-placeholder' %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 8,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}
