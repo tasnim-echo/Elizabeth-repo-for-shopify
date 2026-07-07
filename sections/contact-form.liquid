@@ -1,0 +1,67 @@
+<div class="flex flex-col items-center my-8">
+  {% form 'contact', novalidate: 'novalidate' %}
+    {% if form.errors %}
+      <div class="max-w-4xl mx-auto mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div>
+            {% render 'icon-error' %}
+          </div>
+          <p class="text-red-700 font-semibold ">Please fix the following errors:</p>
+        </div>
+        <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {% for error in form.errors %}
+            <li>{{ form.errors.messages[error] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    {% elsif form.posted_successfully? %}
+      <div class="max-w-4xl mx-auto mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div>
+            {% render 'icon-success' %}
+          </div>
+          <p class="text-green-700 font-semibold">Your message has been submitted successfully!</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <input
+      type="text"
+      name="contact[name]"
+      id="contact_name"
+      placeholder="Name"
+      class="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+    >
+    <input
+      type="email"
+      name="contact[email]"
+      id="contact_email"
+      placeholder="Email"
+      class="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+    >
+    <textarea
+      name="contact[body]"
+      id="contact_message"
+      rows="6"
+      placeholder="Your message"
+      class="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+    ></textarea>
+    <input
+      type="submit"
+      value="Send"
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 block w-full max-w-md"
+    >
+  {% endform %}
+</div>
+
+{% schema %}
+{
+  "name": "Contact Form",
+  "presets": [
+    {
+      "name": "Contact Form"
+    }
+  ]
+}
+{% endschema %}

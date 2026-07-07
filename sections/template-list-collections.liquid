@@ -1,1 +1,64 @@
-hello world
+<div class="py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold text-center mb-12">{{ section.settings.title }}</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {% for collection in collections %}
+        {% if collection.all_products_count > 0 %}
+          {% if collection.featured_image %}
+            {% assign collection_image = collection.featured_image %}
+          {% elsif collection.products.first %}
+            {% assign collection_image = collection.products.first.featured_image %}
+          {% endif %}
+
+          <a
+            href="{{ collection.url }}"
+            class="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300"
+          >
+            <div class="aspect-square overflow-hidden bg-gray-100">
+              {% if collection_image %}
+                <img
+                  src="{{ collection_image | image_url: width: 700 }}"
+                  alt="{{ collection.title | escape }}"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  width="{{ collection_image.width }}"
+                  height="{{ collection_image.height }}"
+                >
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}
+              {% endif %}
+            </div>
+
+            <div class="p-6 text-center">
+              <h2 class="text-xl font-semibold group-hover:text-gray-700 transition">
+                {{ collection.title }}
+              </h2>
+
+              <p class="mt-2 text-sm text-gray-500">
+                {{ collection.all_products_count }}
+                {% if collection.all_products_count == 1 %}
+                  Product
+                {% else %}
+                  Products
+                {% endif %}
+              </p>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Template List Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Collections"
+    }
+  ]
+}
+{% endschema %}
