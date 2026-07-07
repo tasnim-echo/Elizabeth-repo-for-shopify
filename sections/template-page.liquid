@@ -1,48 +1,15 @@
 <section class="bg-gray-50 py-20">
   <div class="max-w-5xl mx-auto px-6">
-    <div class="text-center mb-16">
+    <div class="text-center">
       <span class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-500"> Our Story </span>
 
       <h1 class="mt-4 text-4xl md:text-5xl font-bold text-gray-900">
         {{ page.title }}
       </h1>
-
-      <div class="w-24 h-1 bg-black mx-auto mt-6 rounded"></div>
     </div>
 
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <div class="overflow-hidden rounded-xl shadow-lg">
-        <img
-          src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=900&q=80"
-          alt="Fashion Store"
-          class="w-full h-full object-cover"
-        >
-      </div>
-
-      <div>
-        <h2 class="text-3xl font-semibold mb-6">Inspired by Everyday Style</h2>
-
-        <div class="prose prose-lg max-w-none text-gray-600 leading-8">
-          {{ page.content }}
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-      <div class="bg-white rounded-xl shadow p-8 text-center">
-        <h3 class="text-4xl font-bold mb-2">10K+</h3>
-        <p class="text-gray-600">Happy Customers</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-8 text-center">
-        <h3 class="text-4xl font-bold mb-2">500+</h3>
-        <p class="text-gray-600">Premium Products</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-8 text-center">
-        <h3 class="text-4xl font-bold mb-2">100%</h3>
-        <p class="text-gray-600">Quality Guaranteed</p>
-      </div>
+    <div class="prose prose-lg max-w-none text-gray-600 leading-8">
+      {{ page.content }}
     </div>
   </div>
 </section>
