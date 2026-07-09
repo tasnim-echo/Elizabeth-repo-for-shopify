@@ -1,1 +1,243 @@
-gxc
+{% assign select_variant = product.selected_or_first_available_variant %}
+
+<div class="max-w-6xl mx-auto my-8 px-2">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    {% comment %} product images and videos {% endcomment %}
+    <div class="product--medias">
+      <div class="hidden md:block">
+        {% for media in product.media %}
+          <div class="h-100 overflow-hidden p-2">
+            {% render 'product-media', media: media %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="md:hidden">
+        <div class="swiper h-88">
+          <div class="swiper-wrapper">
+            {% for media in product.media %}
+              <div class="swiper-slide">
+                <div class="h-80 overflow-hidden p-2">
+                  {% render 'product-media', media: media %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="flex items-center justify-center gap-6 mt-4">
+            <div class="swiper-button-prev !static !m-0"></div>
+            <div class="swiper-pagination !static !w-auto"></div>
+            <div class="swiper-button-next !static !m-0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} product information {% endcomment %}
+    <div class="product--information sticky top-5 p-2">
+      {% form 'product', product %}
+        <input type="hidden" name="id" value="{{ select_variant.id }}">
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'vendor' %}
+              <div class="my-3">
+                <span class="text-xs text-gray-500">{{ product.vendor }}</span>
+              </div>
+            {% when 'title' %}
+              <div class="my-3">
+                <span class="text-3xl text-gray-900 font-semibold">{{ product.title }}</span>
+              </div>
+            {% when 'price' %}
+              <div class="my-3">
+                <span class="text-base text-gray-500 line-through">{{ select_variant.compare_at_price | money }}</span>
+                <span class="text-base text-gray-900 font-semibold">{{ select_variant.price | money }}</span>
+
+                {% if select_variant.price < select_variant.compare_at_price %}
+                  <span class="px-5 py-1 font-bold bg-red-500 rounded-full text-white mx-4">Sale</span>
+                {% endif %}
+              </div>
+            {% when 'variant_picker' %}
+              <div class="my-3">
+                {% unless product.has_only_default_variant %}
+                  <div
+                    class="space-y-5"
+                    data-url="{{ product.url }}"
+                    data-section="{{ section.id }}"
+                  >
+                    {% for option in product.options_with_values %}
+                      <div>
+                        <label
+                          for="Option-{{ section.id }}-{{ forloop.index0 }}"
+                          class="block mb-2 text-sm font-semibold text-gray-800"
+                        >
+                          {{ option.name }}
+                        </label>
+
+                        <select
+                          name="options[{{ option.name | escape }}]"
+                          id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 shadow-sm transition duration-200 focus:border-black focus:ring-2 focus:ring-black/10 focus:outline-none cursor-pointer"
+                        >
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endunless %}
+              </div>
+            {% when 'quantity_selector' %}
+              <div class="my-3">
+                <label class="block mb-2 text-sm font-semibold text-gray-800" for="Quantity-{{ section.id }}"
+                  >Quantity</label
+                >
+
+                <div class="my-2">
+                  <input
+                    type="number"
+                    name="quantity"
+                    id="Quantity-{{ section.id }}"
+                    value="1"
+                    min="1"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 shadow-sm transition duration-200 focus:border-black focus:ring-2 focus:ring-black/10 focus:outline-none cursor-pointer"
+                  >
+                </div>
+              </div>
+            {% when 'description' %}
+              <div class="my-3">
+                {% assign description = product.description | strip_html %}
+                {% assign words = description | split: ' ' %}
+
+                <p class="text-gray-700 leading-7">
+                  <span class="text-2xl font-semibold italic text-black">
+                    {{ words.first }}
+                  </span>
+                  {{ description | remove_first: words.first }}
+                </p>
+              </div>
+            {% when 'buy_buttons' %}
+              <div class="my-3">
+                <button
+                  type="submit"
+                  name="add"
+                  class="w-full rounded-lg bg-black text-white py-3 font-semibold hover:bg-gray-800 transition duration-300"
+                  {% if select_variant.available == false %}
+                    disabled
+                  {% endif %}
+                >
+                  {% if select_variant.available == false %}
+                    Sold Out
+                  {% else %}
+                    Add to cart
+                  {% endif %}
+                </button>
+              </div>
+            {% else %}
+
+          {% endcase %}
+        {% endfor %}
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .product--information {
+    height: fit-content;
+  }
+  .swiper-button-prev,
+  .swiper-button-next {
+    position: static !important;
+    margin-top: 0 !important;
+    width: 20px;
+    height: 20px;
+    color: #000;
+  }
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 20px;
+  }
+
+  .swiper-pagination {
+    position: static !important;
+    width: auto !important;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #000 !important;
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullets {
+    display: flex;
+    align-items: center;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    new Swiper('.swiper', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "blocks": [
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant Picker",
+      "limit": 1
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity Selector",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy Buttons",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

@@ -9,6 +9,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     {% comment %} tailwind cdn {% endcomment %}
     <script src="https://cdn.tailwindcss.com"></script>
+    {% comment %} swiper js cdn {% endcomment %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    >
     {{ content_for_header }}
     <!-- Header hook for plugins -->
     {{ 'application.css' | asset_url | stylesheet_tag }}
@@ -20,5 +25,7 @@
     <main role="main">
       {{ content_for_layout }}
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   </body>
 </html>
